@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react'
+import React, { useReducer, useEffect } from 'react'
 import BookList from './BookList'
 import BookForm from './BookForm'
 import BookContext from './BookContext'
@@ -14,7 +14,13 @@ const App = () => {
         return state
     }
   }
-  const [state, dispatch] = useReducer(bookReducer, [])
+  const [state, dispatch] = useReducer(bookReducer, [], () => {
+    const localData = localStorage.getItem('books')
+    return localData ? JSON.parse(localData) : []
+  })
+  useEffect(() => {
+    localStorage.setItem('books', JSON.stringify(state))
+  }, [state])
   return (
     <>
       <BookContext.Provider value={{ state, dispatch }}>
